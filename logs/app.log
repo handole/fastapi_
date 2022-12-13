@@ -1,0 +1,10 @@
+14-12-2022 05:12:56 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:13:29 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:15:48 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:16:30 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:16:37 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:16:40 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:16:54 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:17:00 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:17:30 | asyncio:DEBUG | Using selector: EpollSelector
+14-12-2022 05:17:38 | asyncio:DEBUG | Using selector: EpollSelector
