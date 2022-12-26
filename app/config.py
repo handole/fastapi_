@@ -29,6 +29,7 @@ class DBSettings(BaseSettings):
 
 class AuthSettings(BaseSettings):
     jwt_secret: str
+    jwt_refresh_secret: str
     jwt_algoritm: str = "HS256"
     jwt_expiry_time: int # second
 
