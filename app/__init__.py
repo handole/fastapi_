@@ -4,6 +4,7 @@ from beanie import init_beanie
 
 from . import config
 from app.model.user import User
+from app.model.auth import TokenData
 
 app_settings = config.get_app_settings()
 auth_settings = config.get_auth_settings()
@@ -23,6 +24,7 @@ async def initialize_beanie():
     await init_beanie(
         database=client[db_settings.mongo_db],
         document_models=[
-            User
+            User,
+            TokenData,
         ],
     )

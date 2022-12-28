@@ -1,6 +1,8 @@
 from datetime import timedelta
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
+from beanie import Document
 
 class AccessToken(BaseModel):
     """Access token details"""
@@ -16,6 +18,10 @@ class RefreshToken(AccessToken):
     refresh_token_expires: timedelta = timedelta(days=30)
 
 
-class TokenData(BaseModel):
+class TokenData(Document):
     email: Optional[str] = None
+    token: Optional[RefreshToken]
+    created_on: Optional[datetime] = datetime.now()
     
+    class Collection:
+        name = "token_data"

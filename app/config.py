@@ -20,7 +20,7 @@ class AppSettings(BaseSettings):
     
 class DBSettings(BaseSettings):
     mongo_uri: str = "mongodb://localhost:27017"
-    mongo_db: str = 'base'
+    mongo_db: str = 'base_db'
     users_collection: str = "users"
 
     class Config:
