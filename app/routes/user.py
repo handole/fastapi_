@@ -1,7 +1,5 @@
-import base64
 import logging
-import pathlib
-import tempfile
+import uuid
 
 from datetime import datetime
 from datetime import timedelta
@@ -26,8 +24,8 @@ from fastapi_users.router.common import ErrorCode
 from fastapi_users.jwt import generate_jwt
 
 from app import app_settings
-from app.model.user import UserLogin
-from app.model.user import UserCreate
+from app.model.user import UserLogin, ForgotPassword
+from app.model.user import UserCreate, ResetCodePassword
 from app.model.user import User, UserView
 from app.model.auth import AccessToken, RefreshToken, TokenData
 from app.utils.authentication import get_hashed_password
@@ -64,21 +62,33 @@ async def login(
     resp: Response,
     credentials: OAuth2PasswordRequestForm = Depends(),
 ):
-    print(credentials.password)
     user = await User.find_one(User.email == credentials.username)
-    print(user)
     if user is None or verify_password(credentials.password, user.hashed_password) is False:
         logger.error("User or email hash been failed")
         raise HTTPException(status_code=401, detail="Bad email or password")
 
+    if not user.is_verified:
+        logger.error("User not verified, please verify your account...")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User not verified"
+        )
+
     access_token = create_access_token(subject=credentials.username)
     refresh_token = create_refresh_token(subject=credentials.username)
+    # tok = await TokenData.find_one(TokenData.email == user.email)
     td = TokenData(
         email=credentials.username,
         token=RefreshToken(access_token=access_token, refresh_token=refresh_token)
     )
     await td.save()
-    return td
+    # if tok.created_on >= datetime.now() - timedelta(minutes=15):
+    #     print("new token save")
+    #     await td.save()
+    #     # return td
+    # else:
+    #     print("token lama masih bisa digunakan")
+    return td                                               
 
 
 # @router.get("", response_model=List[UserView])
@@ -87,7 +97,22 @@ async def login(
 #     return await User.find(fetch_links=True).to_list()
 
 
+
 # @router.post("/forgot-password")
-# async def forgot_password(
-#     email: EmailStr = Body()
-# )
+# async def forgot_password(forgot: ForgotPassword):
+#     user_data = await User.find_one(User.email == forgot.email)
+#     if not user_data:
+#         raise HTTPException(status_code=404, detail="user not found")
+
+#     reset_code = str(uuid.uuid1())
+#     try:
+#         await ResetCodePassword(
+#             user_id=user_data.id,
+#             reset_code=reset_code,
+#             status=True,expired_in=datetime.now()
+#         ).save()
+#         send_mail = Messa
+
+
+# @router.post("/reset-password")
+# async def reset_password(reset: ResetCodePassword, reset_code: str):

@@ -6,6 +6,7 @@ from typing import Optional
 from beanie import Document
 from beanie import Link
 from beanie import PydanticObjectId
+from beanie import Indexed
 from fastapi_users import schemas
 from fastapi_users.db import BeanieBaseUser
 from fastapi_users_db_beanie import BeanieUserDatabase
@@ -92,7 +93,34 @@ class UserView(BaseModel):
     phone_number: Optional[str]
 
 
-
 class UserLogin(BaseModel):
     email: EmailStr
     hashed_password: str
+
+
+class ForgotPassword(BaseModel):
+    email: EmailStr = Field(...)
+    
+
+class ResetPassword(BaseModel):
+    new_password: str
+    confirm_password: str
+
+    class Config:
+        schema_extra = {"example": {"new_password": "asd", "confirm_password": "asd"}}
+
+    # @validator("confirm_passwowrd")
+    # def passwords_matching(cls, v, values, **kwargs):
+    #     if "new_password" in values and v != values["new_password"]:
+    #         raise ValueError("passwords do not match!")
+    #     return v
+
+
+class ResetCodePassword(Document):
+    user_id: Optional[Indexed(PydanticObjectId)]
+    reset_code: str
+    status: Optional[bool] = True
+    expired_in: Optional[datetime]
+
+    class Collection:
+        name = "reset_code_password"
