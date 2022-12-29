@@ -37,12 +37,6 @@
    poetry add foo_pkg bar_pkg
    ```
 
-### Setup RabbitMQ (Optional)
-⚠️
-Our app only acts as a consumer in this state configuration.
-Set the RabbitMQ Settings in the `.env` file properly.
-
-✌️ More will come.
 
 ### Environment File
 
