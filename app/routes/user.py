@@ -89,30 +89,3 @@ async def login(
     # else:
     #     print("token lama masih bisa digunakan")
     return td                                               
-
-
-# @router.get("", response_model=List[UserView])
-# async def users(user: User = Depends(get_current_user)):
-#     print("==============================", user)
-#     return await User.find(fetch_links=True).to_list()
-
-
-
-# @router.post("/forgot-password")
-# async def forgot_password(forgot: ForgotPassword):
-#     user_data = await User.find_one(User.email == forgot.email)
-#     if not user_data:
-#         raise HTTPException(status_code=404, detail="user not found")
-
-#     reset_code = str(uuid.uuid1())
-#     try:
-#         await ResetCodePassword(
-#             user_id=user_data.id,
-#             reset_code=reset_code,
-#             status=True,expired_in=datetime.now()
-#         ).save()
-#         send_mail = Messa
-
-
-# @router.post("/reset-password")
-# async def reset_password(reset: ResetCodePassword, reset_code: str):
