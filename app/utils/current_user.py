@@ -7,17 +7,18 @@ from app.model.user import UserView, User
 # from fastapi_users import jwt
 # import jwt
 from jose import JWTError, jwt
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login", auto_error=False)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could nor validate credentials",
-        headers={"WWW-Authentication": "Bearer"}
+        headers={"Authentication": "Bearer"}
     )
     try:
         payload = jwt.decode(token, auth_settings.jwt_secret, algorithms=[auth_settings.jwt_algoritm])
+        print(payload)
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
@@ -38,5 +39,6 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 async def get_current_superuser(current_user: User = Depends(get_current_active_user)):
     if current_user.is_superuser is False:
+        print("====================== not superuser")
         raise HTTPException(status_code=400, detail="Not super user")
     return current_user

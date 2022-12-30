@@ -32,7 +32,7 @@ from app.utils.authentication import get_hashed_password
 from app.utils.authentication import verify_password
 from app.utils.authentication import create_access_token, create_refresh_token
 from app.utils import query as query_message
-from app.utils.current_user import get_current_user
+from app.utils.current_user import get_current_superuser, get_current_active_user
 
 
 router = APIRouter(prefix=f"{app_settings.api_prefix}/users", tags=["Users"])
@@ -91,11 +91,20 @@ async def login(
     return td                                               
 
 
-# @router.get("", response_model=List[UserView])
-# async def users(user: User = Depends(get_current_user)):
-#     print("==============================", user)
-#     return await User.find(fetch_links=True).to_list()
+@router.get("", response_model=List[UserView])
+async def users(user: User = Depends(get_current_active_user)):
+    print("==============================", user)
+    return await User.find(fetch_links=True).to_list()
 
+
+@router.get("/active")
+async def active(user: User = Depends(get_current_active_user)):
+    return user
+
+
+@router.get("/admin")
+async def active(user: User = Depends(get_current_superuser)):
+    return user
 
 
 # @router.post("/forgot-password")
