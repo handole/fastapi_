@@ -32,7 +32,7 @@ from app.utils.authentication import get_hashed_password
 from app.utils.authentication import verify_password
 from app.utils.authentication import create_access_token, create_refresh_token
 from app.utils import query as query_message
-from app.utils.current_user import get_current_user
+from app.utils.current_user import get_current_superuser, get_current_active_user
 
 
 router = APIRouter(prefix=f"{app_settings.api_prefix}/users", tags=["Users"])
@@ -76,16 +76,25 @@ async def login(
 
     access_token = create_access_token(subject=credentials.username)
     refresh_token = create_refresh_token(subject=credentials.username)
-    # tok = await TokenData.find_one(TokenData.email == user.email)
+
     td = TokenData(
         email=credentials.username,
         token=RefreshToken(access_token=access_token, refresh_token=refresh_token)
     )
     await td.save()
-    # if tok.created_on >= datetime.now() - timedelta(minutes=15):
-    #     print("new token save")
-    #     await td.save()
-    #     # return td
-    # else:
-    #     print("token lama masih bisa digunakan")
     return td                                               
+
+
+@router.get("", response_model=List[UserView])
+async def users(user: User = Depends(get_current_active_user)):
+    return await User.find(fetch_links=True).to_list()
+
+
+@router.get("/active")
+async def active(user: User = Depends(get_current_active_user)):
+    return user
+
+
+@router.get("/admin")
+async def active(user: User = Depends(get_current_superuser)):
+    return user
