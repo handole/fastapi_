@@ -22,6 +22,7 @@ class BaseUserCreate(BaseModel):
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
+    is_admin: Optional[bool] = False
 
     def create_update_dict(self):
         return self.dict(
@@ -31,6 +32,7 @@ class BaseUserCreate(BaseModel):
                 "is_superuser",
                 "is_active",
                 "is_verified",
+                "is_admin",
                 "oauth_accounts",
             },
         )

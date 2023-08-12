@@ -33,12 +33,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.is_active is False:
-        raise HTTPException(status_code=400, detail="Inactive User")
+        raise HTTPException(status_code=401, detail="Inactive User")
     return current_user
 
 
 async def get_current_superuser(current_user: User = Depends(get_current_active_user)):
     if current_user.is_superuser is False:
         print("====================== not superuser")
-        raise HTTPException(status_code=400, detail="Not super user")
+        raise HTTPException(status_code=401, detail="Not super user")
+    return current_user
+
+
+async def get_current_admin(current_user: User = Depends(get_current_superuser)):
+    if current_user.is_admin is False:
+        raise HTTPException(status_code=401, detail="Un Authorization")
     return current_user
